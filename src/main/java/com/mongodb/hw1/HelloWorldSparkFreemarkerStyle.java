@@ -1,4 +1,4 @@
-package com.mongodb;
+package com.mongodb.hw1;
 
 import java.io.StringWriter;
 import java.util.HashMap;

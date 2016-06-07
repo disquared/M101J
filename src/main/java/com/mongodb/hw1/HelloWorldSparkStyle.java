@@ -1,4 +1,4 @@
-package com.mongodb;
+package com.mongodb.hw1;
 
 import spark.Request;
 import spark.Response;
