@@ -1,1 +1,10 @@
 target/
+/bin/
+/.classpath
+/.settings
+/.idea
+/*.iml
+/.project
+/dist
+/lib
+/exe

@@ -24,8 +24,7 @@ public class BlogPostDAO {
     public Document findByPermalink(String permalink) {
 
         // XXX HW 3.2,  Work Here
-        Bson filter = eq("permalink", permalink);
-        Document post = postsCollection.find(filter).first();
+        Document post = postsCollection.find(eq("permalink", permalink)).first();
 
         return post;
     }
@@ -36,9 +35,8 @@ public class BlogPostDAO {
 
         // XXX HW 3.2,  Work Here
         // Return a list of DBObjects, each one a post from the posts collection
-        Bson sort = descending("date");
         List<Document> posts = postsCollection.find()
-                                              .sort(sort)
+                                              .sort(descending("date"))
                                               .limit(limit)
                                               .into(new ArrayList<Document>());
 
@@ -66,15 +64,17 @@ public class BlogPostDAO {
         // - we created the permalink for you above.
 
         // Build the post object and insert it
-        Document post = new Document();
-        post.append("title", title);
-        post.append("author", username);
-        post.append("body", body);
-        post.append("permalink", permalink);
-        post.append("tags", tags);
-        post.append("comments", new ArrayList<String>());
-        post.append("date", new Date());
+        Document post = new Document()
+              .append("title", title)
+              .append("author", username)
+              .append("body", body)
+              .append("permalink", permalink)
+              .append("tags", tags)
+              .append("comments", new ArrayList())
+              .append("date", new Date());
+        
         postsCollection.insertOne(post);
+        System.out.println("Inserting blog post with permalink " + permalink);
 
         return permalink;
     }
@@ -103,12 +103,10 @@ public class BlogPostDAO {
         Document comment = new Document();
         comment.append("author", name);
         comment.append("body", body);
-        if (email != null) {
+        if (email != null && email.equals("")) {
             comment.append("email", email);
         }
-        
-        Bson filter = eq("permalink", permalink);
-        Document post = postsCollection.find(filter).first();
-        postsCollection.updateOne(filter, push("comments", comment));
+        // can also use new Document("$push", new Document("comments", comment))
+        postsCollection.updateOne(eq("permalink", permalink), push("comments", comment));
     }
 }
