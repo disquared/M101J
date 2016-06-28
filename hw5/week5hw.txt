@@ -14,7 +14,6 @@ db.zips.aggregate([
 	{$match:
 		{
 			state: {$in: ['CA', 'NY']},
-			pop: {$gt: 25000}
 		}
 	},
 	{$group:
@@ -23,13 +22,18 @@ db.zips.aggregate([
 				city: '$city',
 				state: '$state'
 			},
-			city_total_pop: {$sum: '$pop'}
+			pop: {$sum: '$pop'}
+		}
+	},
+	{$match:
+		{
+			pop: {$gt: 25000}
 		}
 	},
 	{$group:
 		{
 			_id: null,
-			avg_pop: {$avg: '$city_total_pop'}
+			pop: {$avg: '$pop'}
 		}
 	}
 ])
@@ -39,7 +43,7 @@ db.grades.aggregate([
 	{$unwind: '$scores'},
 	{$match: 
 		{
-			'scores.type': {$in: ['exam', 'homework']}
+			'scores.type': {$ne: 'quiz'}
 		}
 	},
 	{$group:
